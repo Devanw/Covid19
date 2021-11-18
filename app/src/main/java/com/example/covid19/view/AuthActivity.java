@@ -81,8 +81,6 @@ public class AuthActivity extends AppCompatActivity {
 
 
         btnLogin = findViewById(R.id.loginBtn);
-//        btnLogin.setBackgroundColor(getResources().getColor(R.color.darkerred));
-//        btnLogin.setTextColor(getResources().getColor(R.color.white));
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
