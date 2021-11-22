@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_show_snackbar"
+        android:id="@+id/bookmark"
         android:icon="@drawable/heart"
         android:title="SnackBar"
         app:showAsAction="ifRoom" />
