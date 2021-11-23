@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,14 +20,22 @@ import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
 import com.example.covid19.component.recyclerview.CountryAdapter;
 import com.example.covid19.model.covid.Country;
+import com.example.covid19.model.user.User;
+import com.example.covid19.plugin.retrofit.AuthRetrofit;
+import com.example.covid19.plugin.retrofit.CovidRetrofit;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListCountryActivity extends BaseActivity {
 
-    private Boolean flagBookmark;
+    private Boolean flagBookmark = false;
 
     private RecyclerView recyclerView;
     private CountryAdapter countryAdapter;
@@ -43,6 +53,19 @@ public class ListCountryActivity extends BaseActivity {
 
 
         recyclerView = findViewById(R.id.recyclerview);
+        CovidRetrofit covidRetrofit = new CovidRetrofit();
+        covidRetrofit.getAPI().getCountries().enqueue(new Callback<List<Country>>() {
+            @Override
+            public void onResponse(Call<List<Country>> call, Response<List<Country>> response) {
+                //set value to array
+            }
+
+            @Override
+            public void onFailure(Call<List<Country>> call, Throwable t) {
+                Snackbar.make(findViewById(R.id.loginConstraintLayout), "Error: " + t.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
+            }
+
+        });
 
 
 
@@ -76,6 +99,12 @@ public class ListCountryActivity extends BaseActivity {
                 }
                 return false;
             }
+        });
+
+        ImageView bm = (ImageView) menu.findItem(R.id.bookmark).getActionView();
+
+        bm.setOnClickListener(v -> {
+            flagBookmark = !flagBookmark;
         });
 
         return true;
