@@ -10,10 +10,10 @@ import retrofit2.http.POST;
 public interface AuthEndPointInterface {
 
     // Trailing slash is needed
-    String BASE_URL = "https://talentpool.oneindonesia.id/api";
+    String BASE_URL = "https://talentpool.oneindonesia.id/api/";
 
-    @POST("/user/login")
-    @Headers("X-API-KEY : 454041184B0240FBA3AACD15A1F7A8BB")
+    @POST("user/login")
+    @Headers("X-API-KEY: 454041184B0240FBA3AACD15A1F7A8BB")
     Call<User> login(@Body PayloadLogin login);
 
 }

@@ -22,9 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
+import com.example.covid19.api.endpoint.AuthEndPointInterface;
 import com.example.covid19.api.service.AuthService;
 import com.example.covid19.model.payload.PayloadLogin;
 import com.example.covid19.model.user.User;
+import com.example.covid19.plugin.retrofit.AuthRetrofit;
 import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -48,6 +50,7 @@ public class AuthActivity extends AppCompatActivity {
     private String password;
 
     private AuthService authService;
+    private AuthRetrofit authRetrofit;
 
     private Executor backgroundThread = Executors.newSingleThreadExecutor();
     private Executor mainThread = new Executor() {
@@ -112,8 +115,8 @@ public class AuthActivity extends AppCompatActivity {
             public void run() {
                 // connect server
                 PayloadLogin payloadLogin = new PayloadLogin(username, password);
-                authService.getAuthRetrofit().getAPI().login(payloadLogin)
-                .enqueue(new Callback<User>() {
+                AuthRetrofit authRetrofit = new AuthRetrofit();
+                authRetrofit.getAPI().login(payloadLogin).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         pb.setVisibility(View.INVISIBLE);
