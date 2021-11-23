@@ -1,14 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rvItemConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="8dp"
-    app:cardMaxElevation="16dp"
-    app:cardPreventCornerOverlap="true">
+    android:layout_height="match_parent"
+    android:layout_margin="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="-30dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        app:cardMaxElevation="16dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/cardView"
+        tools:layout_editor_absoluteX="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="#F1F1F1"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/bookmarkIconCard"
+                android:layout_width="34sp"
+                android:layout_height="34sp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@android:drawable/btn_star_big_off" />
+
+            <TextView
+                android:id="@+id/caseKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Total Cases:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/caseValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/caseKey"
+                app:layout_constraintTop_toTopOf="@id/caseKey" />
+
+            <TextView
+                android:id="@+id/todayCaseKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Today's Cases:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/caseKey" />
+
+            <TextView
+                android:id="@+id/todayCaseValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/todayCaseKey" />
+
+            <TextView
+                android:id="@+id/deathKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total Deaths:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/todayCaseKey" />
+
+            <TextView
+                android:id="@+id/deathValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/deathKey" />
+
+            <TextView
+                android:id="@+id/todayDeathKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Today's Deaths:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/deathKey" />
+
+            <TextView
+                android:id="@+id/todayDeathValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/todayDeathKey" />
+
+            <TextView
+                android:id="@+id/recoveredKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total Recovered:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/todayDeathKey" />
+
+            <TextView
+                android:id="@+id/recoveredValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/recoveredKey" />
+
+            <TextView
+                android:id="@+id/todayRecoveredKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Today's Recoveries:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/recoveredKey" />
+
+            <TextView
+                android:id="@+id/todayRecoveredValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/todayRecoveredKey" />
+
+            <TextView
+                android:id="@+id/activeKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total Active Cases:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/todayRecoveredKey" />
+
+            <TextView
+                android:id="@+id/activeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/activeKey" />
+
+            <TextView
+                android:id="@+id/criticalKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total Critical Cases:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/activeKey" />
+
+            <TextView
+                android:id="@+id/criticalValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/criticalKey" />
+
+            <TextView
+                android:id="@+id/testKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total Covid Tests:"
+                app:layout_constraintStart_toStartOf="@+id/caseKey"
+                app:layout_constraintTop_toBottomOf="@+id/criticalKey" />
+
+            <TextView
+                android:id="@+id/testValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintStart_toStartOf="@+id/caseValue"
+                app:layout_constraintTop_toTopOf="@id/testKey" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        app:cardMaxElevation="16dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/countryFlagImageView"
             android:layout_width="85dp"
@@ -20,8 +218,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="30dp"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            android:paddingEnd="30dp">
 
             <TextView
                 android:id="@+id/countryName"
@@ -39,15 +237,15 @@
                 tools:paddingLeft="8dp"
                 tools:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/continentName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:gravity="center_vertical"
-                    android:text="Continent"
-                    app:layout_constraintStart_toStartOf="@+id/countryName"
-                    app:layout_constraintTop_toBottomOf="@+id/countryName" />
+            <TextView
+                android:id="@+id/continentName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:gravity="center_vertical"
+                android:text="Continent"
+                app:layout_constraintStart_toStartOf="@+id/countryName"
+                app:layout_constraintTop_toBottomOf="@+id/countryName" />
 
             <TextView
                 android:id="@+id/activeCaseTextView"
@@ -61,4 +259,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
