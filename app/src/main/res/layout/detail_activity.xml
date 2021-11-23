@@ -5,6 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tabLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleDetail">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabCountryInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Country Info" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabCovidStatistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Covid Statistics" />
+
+    </com.google.android.material.tabs.TabLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/titleDetail"
         android:layout_width="match_parent"
@@ -47,26 +68,35 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/bookmarkIcon"
+            android:layout_width="34sp"
+            android:layout_height="34sp"
+            android:layout_marginEnd="7dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/shareIcon"
+            app:srcCompat="@drawable/heart" />
+
+        <ImageView
+            android:id="@+id/shareIcon"
             android:layout_width="34sp"
             android:layout_height="34sp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/heart" />
+            app:srcCompat="@android:drawable/ic_menu_share" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="531dp"
+        android:id="@+id/containerDetail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleDetail">
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
