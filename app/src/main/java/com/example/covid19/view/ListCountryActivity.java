@@ -43,7 +43,7 @@ public class ListCountryActivity extends BaseActivity {
 
 
         recyclerView = findViewById(R.id.recyclerview);
-        
+
 
 
     }
