@@ -2,31 +2,67 @@ package com.example.covid19.view;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
+import com.example.covid19.model.covid.Country;
+import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
 
 public class HomeActivity extends BaseActivity {
+
+    private Button navToListCountryBtn;
+    private Button logoutBtn;
+    private TextView allCountryTotalCases;
+    private TextView allCountryActiveCases;
+    private TextView allCountryRecoveries;
+    private TextView allCountryTests;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //kalau mau fragment
+//        setContentView(R.layout.activity_main);
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.container_fragment, HomeFragmentManager.newInstance())
+//                .commitNow();
+
+        setContentView(R.layout.homepage);
+
         // insert shared preference. get user's name
         String user = "User";
         getSupportActionBar().setTitle("Welcome " + user);
         getSupportActionBar().setElevation(0);
-        Log.e("TAG", "onCreate: " );
+
+
+
+
+        navToListCountryBtn = findViewById(R.id.navBtnList);
+        navToListCountryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ListCountryActivity.class);
+            startActivity(intent);
+        });
+        logoutBtn = findViewById(R.id.logoutBtn);
+        logoutBtn.setOnClickListener(v -> {
+            SessionManagerUtil.getInstance().endUserSession(v.getContext());
+            Intent intent = new Intent(v.getContext(), AuthActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 
     @Override
