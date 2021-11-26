@@ -49,7 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthActivity extends BaseActivity {
+public class AuthActivity extends AppCompatActivity {
     public static final String USERINFO = "USERINFO";
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
