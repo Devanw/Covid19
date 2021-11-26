@@ -150,7 +150,17 @@ public class ListCountryActivity extends BaseActivity {
     private void doSearchItems(String query){
         int foundItem = 0;
         ArrayList<Country> bufferArray = new ArrayList<Country>();
-        for (Country country:countries) {
+        ArrayList<Country> sourceArray = new ArrayList<Country>();
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("BookmarkList", null);
+        Type type = new TypeToken<ArrayList<Country>>() {}.getType();
+        ArrayList<Country> obj = gson.fromJson(json, type);
+        if (flagBookmark) {
+            sourceArray = obj;
+        } else {
+            sourceArray = countries;
+        }
+        for (Country country:sourceArray) {
             if (country.getCountry().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
                 foundItem++;
                 bufferArray.add(country);
