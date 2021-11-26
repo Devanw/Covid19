@@ -6,6 +6,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,15 +22,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.covid19.BaseActivity;
+import com.example.covid19.MainActivity;
 import com.example.covid19.R;
 import com.example.covid19.api.service.RetroServerCorona;
 import com.example.covid19.databinding.HomepageBinding;
 import com.example.covid19.model.covid.Country;
+import com.example.covid19.model.user.User;
 import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,7 +47,7 @@ public class HomeActivity extends BaseActivity {
     public static final String EXTRA_ALL_COVID_INFO = "extraAllCovidInfo";
 
     private Button navToListCountryBtn;
-    private Button logoutBtn;
+    private Button myProfileBtn;
     private TextView allCountryTotalCases;
     private TextView allCountryActiveCases;
     private TextView allCountryRecoveries;
@@ -69,23 +75,35 @@ public class HomeActivity extends BaseActivity {
         initView();
 
         // insert shared preference. get user's name
-        String user = "User";
+        SharedPreferences userSp = getSharedPreferences(AuthActivity.USERINFO, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = userSp.getString("Userinfo", null);
+        Type type = new TypeToken<User>() {}.getType();
+        User userFromSp = gson.fromJson(json, type);
+
+        String user;
+
+        try {
+            user = userFromSp.getUsername();
+        } catch (Exception e) {
+            user = "User";
+        }
+
+
         getSupportActionBar().setTitle("Welcome " + user);
         getSupportActionBar().setElevation(0);
 
 
+        myProfileBtn = findViewById(R.id.myProfileBtn);
+        myProfileBtn.setOnClickListener(v-> {
+            Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
 
 
         navToListCountryBtn = findViewById(R.id.navBtnList);
         navToListCountryBtn.setOnClickListener(v -> {
             goToListCountry();
-        });
-        logoutBtn = findViewById(R.id.logoutBtn);
-        logoutBtn.setOnClickListener(v -> {
-            SessionManagerUtil.getInstance().endUserSession(v.getContext());
-            Intent intent = new Intent(v.getContext(), AuthActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
         });
     }
 
