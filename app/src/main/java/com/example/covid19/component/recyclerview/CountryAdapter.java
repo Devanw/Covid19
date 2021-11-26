@@ -57,6 +57,16 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         Picasso.get()
                 .load(country.getCountryInfo().getFlag())
                 .into(holder.countryFlagImageView);
+
+        holder.caseValue.setText(country.getCases());
+        holder.todayCaseValue.setText(country.getTodayCases());
+        holder.deathValue.setText(country.getDeaths());
+        holder.todayDeathValue.setText(country.getTodayDeaths());
+        holder.recoveredValue.setText(country.getRecovered());
+        holder.todayRecoveredValue.setText(country.getTodayRecovered());
+        holder.activeValue.setText(country.getActive());
+        holder.criticalValue.setText(country.getCritical());
+        holder.testValue.setText(country.getTests());
     }
 
     @Override
@@ -74,6 +84,17 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         ImageView iconBookmark;
         Country country;
 
+        //bagian detail
+        TextView caseValue;
+        TextView todayCaseValue;
+        TextView deathValue;
+        TextView todayDeathValue;
+        TextView recoveredValue;
+        TextView todayRecoveredValue;
+        TextView activeValue;
+        TextView criticalValue;
+        TextView testValue;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             countryName = itemView.findViewById(R.id.countryName);
@@ -89,6 +110,16 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                     detailCardView.setVisibility(View.GONE);
                 }
             });
+
+            caseValue = itemView.findViewById(R.id.caseValue);
+            todayCaseValue = itemView.findViewById(R.id.todayCaseValue);
+            deathValue = itemView.findViewById(R.id.deathValue);
+            todayDeathValue = itemView.findViewById(R.id.todayDeathValue);
+            recoveredValue = itemView.findViewById(R.id.recoveredValue);
+            todayRecoveredValue = itemView.findViewById(R.id.todayRecoveredValue);
+            activeValue = itemView.findViewById(R.id.activeValue);
+            criticalValue = itemView.findViewById(R.id.criticalValue);
+            testValue = itemView.findViewById(R.id.testValue);
 
             //read file
             Gson gson = new Gson();
