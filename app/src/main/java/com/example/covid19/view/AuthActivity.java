@@ -1,6 +1,8 @@
 package com.example.covid19.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +32,7 @@ import com.example.covid19.plugin.retrofit.AuthRetrofit;
 import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 
 import java.util.Base64;
 import java.util.concurrent.Executor;
@@ -40,6 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthActivity extends AppCompatActivity {
+    private static final String USERINFO = "USERINFO";
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
     private TextView forgotPw;
@@ -121,7 +125,7 @@ public class AuthActivity extends AppCompatActivity {
                     public void onResponse(Call<User> call, Response<User> response) {
                         pb.setVisibility(View.INVISIBLE);
                         mainThread.execute(() -> {
-                            startAndStoreSession();
+                            startAndStoreSession(response.body());
                             startMainActivity();
                         });
                     }
@@ -149,9 +153,15 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void startAndStoreSession(){
+    private void startAndStoreSession(User user){
         SessionManagerUtil.getInstance()
                 .storeUserToken(this, generateToken(username, password));
+        SharedPreferences sharedPreferences = getSharedPreferences(USERINFO, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String writeData = gson.toJson(user);
+        prefsEditor.putString("Userinfo", writeData);
+        prefsEditor.commit();
         SessionManagerUtil.getInstance()
                 .startUserSession(this, 30);
     }

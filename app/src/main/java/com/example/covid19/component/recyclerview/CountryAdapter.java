@@ -139,9 +139,11 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                     }
                 }
             } else {
+                obj = new ArrayList<>();
                 iconBookmark.setImageResource(android.R.drawable.star_big_off);
             }
 
+            ArrayList<Country> finalObj = obj;
             iconBookmark.setOnClickListener(v -> {
                 //read file
                 try {
@@ -150,20 +152,23 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                     Type type2 = new TypeToken<ArrayList<Country>>() {
                     }.getType();
                     ArrayList<Country> obj2 = gson2.fromJson(json2, type2);
-                    if (obj2.size() > 0) { //replace ke check countryname ada di sharedpref bookmark / ga
+                    if (obj2!=null && obj2.size() >0) { //replace ke check countryname ada di sharedpref bookmark / ga
                         Log.e(TAG, "ViewHolder: abov0");
                         for (int i = obj2.size() - 1; i >= 0; i--) {
                             //filter according to owner of clicked card
                             if (obj2.get(i).getCountry().equals(country.getCountry())) {
+                                Log.e(TAG, "ViewHolder: rmv" );
                                 obj2.remove(i);
                                 iconBookmark.setImageResource(android.R.drawable.star_big_off);
                             } else {
+                                Log.e(TAG, "ViewHolder: add" );
                                 obj2.add(country);
                                 iconBookmark.setImageResource(android.R.drawable.star_big_on);
                             }
                         }
                         //write to sharedpref
                     } else {
+                        obj2 = finalObj;
                         Log.e(TAG, "ViewHolder: add");
                         obj2.add(country);
                         iconBookmark.setImageResource(android.R.drawable.star_big_on);
