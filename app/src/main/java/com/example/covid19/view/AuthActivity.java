@@ -27,6 +27,7 @@ import com.example.covid19.R;
 import com.example.covid19.api.endpoint.AuthEndPointInterface;
 import com.example.covid19.api.service.AuthService;
 import com.example.covid19.model.payload.PayloadLogin;
+import com.example.covid19.model.user.LoginResponse;
 import com.example.covid19.model.user.User;
 import com.example.covid19.plugin.retrofit.AuthRetrofit;
 import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
@@ -38,12 +39,14 @@ import java.util.Base64;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.security.auth.login.LoginException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AuthActivity extends AppCompatActivity {
-    private static final String USERINFO = "USERINFO";
+    public static final String USERINFO = "USERINFO";
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
     private TextView forgotPw;
@@ -118,20 +121,24 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // connect server
-                PayloadLogin payloadLogin = new PayloadLogin(username, password);
                 AuthRetrofit authRetrofit = new AuthRetrofit();
-                authRetrofit.getAPI().login(payloadLogin).enqueue(new Callback<User>() {
+                authRetrofit.getAPI().login(username, password).enqueue(new Callback<LoginResponse>() {
                     @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         pb.setVisibility(View.INVISIBLE);
-                        mainThread.execute(() -> {
-                            startAndStoreSession(response.body());
-                            startMainActivity();
-                        });
+                        if (response.body() != null) {
+                            mainThread.execute(() -> {
+                                Log.e("TAG", "onResponse: " + response.body() );
+                                startAndStoreSession(response.body().getData());
+                                startMainActivity();
+                            });
+                        } else {
+                            Snackbar.make(findViewById(R.id.loginConstraintLayout), "Error: login failed" , Snackbar.LENGTH_INDEFINITE).show();
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
                         pb.setVisibility(View.INVISIBLE);
                         Snackbar.make(findViewById(R.id.loginConstraintLayout), "Error: " + t.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
                     }
