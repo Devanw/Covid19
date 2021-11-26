@@ -1,7 +1,10 @@
 package com.example.covid19.view;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,10 +22,23 @@ import androidx.annotation.Nullable;
 
 import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
+import com.example.covid19.api.service.RetroServerCorona;
+import com.example.covid19.databinding.HomepageBinding;
 import com.example.covid19.model.covid.Country;
 import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends BaseActivity {
+
+    public static final String EXTRA_ALL_COVID_INFO = "extraAllCovidInfo";
 
     private Button navToListCountryBtn;
     private Button logoutBtn;
@@ -30,6 +46,12 @@ public class HomeActivity extends BaseActivity {
     private TextView allCountryActiveCases;
     private TextView allCountryRecoveries;
     private TextView allCountryTests;
+
+    private String TAG = "HomeActivity";
+
+    private HomepageBinding binding;
+
+    private JSONObject allcovidinfo = null;
 
 
     @Override
@@ -40,8 +62,11 @@ public class HomeActivity extends BaseActivity {
 //        getSupportFragmentManager().beginTransaction()
 //                .replace(R.id.container_fragment, HomeFragmentManager.newInstance())
 //                .commitNow();
+        binding = HomepageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        setContentView(R.layout.homepage);
+        initExtra();
+        initView();
 
         // insert shared preference. get user's name
         String user = "User";
@@ -53,8 +78,7 @@ public class HomeActivity extends BaseActivity {
 
         navToListCountryBtn = findViewById(R.id.navBtnList);
         navToListCountryBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, ListCountryActivity.class);
-            startActivity(intent);
+            goToListCountry();
         });
         logoutBtn = findViewById(R.id.logoutBtn);
         logoutBtn.setOnClickListener(v -> {
@@ -63,6 +87,56 @@ public class HomeActivity extends BaseActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
+    }
+
+    private void goToListCountry() {
+        RetroServerCorona.getInstance().getCountries().enqueue(new Callback<List<Country>>() {
+            @Override
+            public void onResponse(Call<List<Country>> call, Response<List<Country>> response) {
+                Log.d("getCountries success : ", ""+ response.code() + "\n" + new Gson().toJson(response.body()));
+                Intent intent = new Intent(HomeActivity.this, ListCountryActivity.class);
+                intent.putExtra(ListCountryActivity.EXTRA_COUNTRIES, new Gson().toJson(response.body()));
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(Call<List<Country>> call, Throwable t) {
+                Log.e("getCountries fail : ", t.getMessage());
+                showMessage(t.getMessage(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToListCountry();
+                    }
+                });
+            }
+        });
+    }
+
+    private void initView() {
+        try {
+            if (allcovidinfo != null) {
+                binding.allCountryTotalValue.setText(allcovidinfo.has("updated") ? allcovidinfo.getString("updated") : "NaN");
+                binding.allRecoveredValue.setText(allcovidinfo.has("recovered") ? allcovidinfo.getString("recovered") : "NaN");
+                binding.allActiveValue.setText(allcovidinfo.has("cases") ? allcovidinfo.getString("cases") : "NaN");
+                binding.allTestValue.setText(allcovidinfo.has("tests") ? allcovidinfo.getString("cases") : "tests");
+            } else {
+                showMessage("No Data !");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+            showMessage(e.getMessage());
+        }
+    }
+
+    private void initExtra() {
+        try {
+            if (getIntent().hasExtra(EXTRA_ALL_COVID_INFO)) {
+                allcovidinfo = new JSONObject(getIntent().getStringExtra(EXTRA_ALL_COVID_INFO));
+                Log.d(TAG, allcovidinfo.toString());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override

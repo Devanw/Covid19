@@ -48,6 +48,8 @@ public class ListCountryActivity extends BaseActivity {
     private CountryAdapter countryAdapter;
     private ArrayList<Country> countries = new ArrayList<>();;
 
+    public static final String EXTRA_COUNTRIES = "extraCountries";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.e("TAG", "onCreate: Listcountry");
