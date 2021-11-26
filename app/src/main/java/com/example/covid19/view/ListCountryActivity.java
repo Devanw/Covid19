@@ -2,6 +2,7 @@ package com.example.covid19.view;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.covid19.BaseActivity;
@@ -62,19 +64,17 @@ public class ListCountryActivity extends BaseActivity {
 
 
         recyclerView = findViewById(R.id.recyclerview);
-        CovidRetrofit covidRetrofit = new CovidRetrofit();
-        covidRetrofit.getAPI().getCountries().enqueue(new Callback<List<Country>>() {
-            @Override
-            public void onResponse(Call<List<Country>> call, Response<List<Country>> response) {
-                //set value to array
-            }
 
-            @Override
-            public void onFailure(Call<List<Country>> call, Throwable t) {
-                Snackbar.make(findViewById(R.id.loginConstraintLayout), "Error: " + t.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
-            }
-
-        });
+        Intent i = getIntent();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Country>>() {}.getType();
+        ArrayList<Country> obj2 = gson.fromJson(i.getStringExtra(EXTRA_COUNTRIES), type);
+        countries = obj2;
+        Log.e("TAG", "onCreate: " + countries.size() );
+        countryAdapter = new CountryAdapter();
+        countryAdapter.setCountries(countries);
+        recyclerView.setAdapter(countryAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
 
         sharedPreferences = getSharedPreferences(SAVE, Context.MODE_PRIVATE);
     }
@@ -110,6 +110,9 @@ public class ListCountryActivity extends BaseActivity {
         });
 
         ImageView bm = (ImageView) menu.findItem(R.id.bookmark).getActionView();
+
+        bm.setBackgroundColor(getResources().getColor(R.color.normal_red));
+        bm.setImageDrawable(getResources().getDrawable(R.drawable.heart));
 
         bm.setOnClickListener(v -> {
             switchAdapterData(bm);
