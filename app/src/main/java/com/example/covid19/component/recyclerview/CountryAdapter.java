@@ -154,6 +154,9 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                     String writeData = gson.toJson(obj);
                     prefsEditor.putString("BookmarkList", writeData);
                     prefsEditor.commit();
+                } else {
+                    obj.add(country);
+                    iconBookmark.setImageResource(android.R.drawable.star_big_on);
                 }
             });
         }
