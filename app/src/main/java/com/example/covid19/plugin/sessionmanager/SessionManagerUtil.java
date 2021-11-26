@@ -64,6 +64,16 @@ public class SessionManagerUtil {
                 context.getSharedPreferences(SESSION_PREFERENCE, Context.MODE_PRIVATE).edit();
         editor.clear();
         editor.apply();
+
+        SharedPreferences.Editor bookmark =
+                context.getSharedPreferences("BookmarkList", Context.MODE_PRIVATE).edit();
+        bookmark.clear();
+        bookmark.apply();
+
+        SharedPreferences.Editor userinfo =
+                context.getSharedPreferences("Userinfo", Context.MODE_PRIVATE).edit();
+        userinfo.clear();
+        userinfo.apply();
     }
 
 }
