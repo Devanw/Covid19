@@ -16,6 +16,8 @@ public class ListCountryActivity extends BaseActivity {
 
     private Boolean flagBookmark;
 
+    public static final String EXTRA_COUNTRIES = "extraCountries";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.e("TAG", "onCreate: Listcountry");

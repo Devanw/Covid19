@@ -35,8 +35,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onResponse(Call<AllCovidInfo> call, Response<AllCovidInfo> response) {
                 try {
-                    Log.d(TAG, "response : " + response.code() + "\n" + new Gson().toJson(response.body()));
-                    AllCovidInfo allCovidInfo = response.body();
+                    Log.d("getAll response : ", ""+ response.code() + "\n" + new Gson().toJson(response.body()));
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     intent.putExtra(HomeActivity.EXTRA_ALL_COVID_INFO, new Gson().toJson(response.body()));
                     startActivity(intent);
@@ -52,8 +51,13 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<AllCovidInfo> call, Throwable t) {
-                Log.e("onFailure", t.getMessage());
-
+                Log.e("getAll onFailure : ", t.getMessage());
+                showMessage(t.getMessage(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        recreate();
+                    }
+                });
             }
         });
 

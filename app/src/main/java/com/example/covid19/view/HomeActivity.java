@@ -22,11 +22,19 @@ import androidx.annotation.Nullable;
 
 import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
+import com.example.covid19.api.service.RetroServerCorona;
 import com.example.covid19.databinding.HomepageBinding;
 import com.example.covid19.model.covid.Country;
 import com.example.covid19.plugin.sessionmanager.SessionManagerUtil;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends BaseActivity {
 
@@ -70,8 +78,7 @@ public class HomeActivity extends BaseActivity {
 
         navToListCountryBtn = findViewById(R.id.navBtnList);
         navToListCountryBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, ListCountryActivity.class);
-            startActivity(intent);
+            goToListCountry();
         });
         logoutBtn = findViewById(R.id.logoutBtn);
         logoutBtn.setOnClickListener(v -> {
@@ -79,6 +86,29 @@ public class HomeActivity extends BaseActivity {
             Intent intent = new Intent(v.getContext(), AuthActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        });
+    }
+
+    private void goToListCountry() {
+        RetroServerCorona.getInstance().getCountries().enqueue(new Callback<List<Country>>() {
+            @Override
+            public void onResponse(Call<List<Country>> call, Response<List<Country>> response) {
+                Log.d("getCountries success : ", ""+ response.code() + "\n" + new Gson().toJson(response.body()));
+                Intent intent = new Intent(HomeActivity.this, ListCountryActivity.class);
+                intent.putExtra(ListCountryActivity.EXTRA_COUNTRIES, new Gson().toJson(response.body()));
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(Call<List<Country>> call, Throwable t) {
+                Log.e("getCountries fail : ", t.getMessage());
+                showMessage(t.getMessage(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToListCountry();
+                    }
+                });
+            }
         });
     }
 
