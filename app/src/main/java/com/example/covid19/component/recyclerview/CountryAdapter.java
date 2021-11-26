@@ -103,7 +103,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
             countryFlagImageView = itemView.findViewById(R.id.countryFlagImageView);
             detailCardView = itemView.findViewById(R.id.cardViewDetail);
             iconBookmark = itemView.findViewById(R.id.bookmarkIconCard);
-            itemView.setOnClickListener(v -> {
+            itemView.findViewById(R.id.cardView).setOnClickListener(v -> {
                 if (detailCardView.getVisibility() == View.GONE ) {
                     detailCardView.setVisibility(View.VISIBLE);
                 } else {
