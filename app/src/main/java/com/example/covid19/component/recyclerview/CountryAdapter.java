@@ -52,21 +52,21 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         Country country = countries.get(position);
         holder.countryName.setText(country.getCountry());
         holder.continentName.setText(country.getContinent());
-        holder.activeCaseTextView.setText(country.getActive());
+        holder.activeCaseTextView.setText(country.getActive().toString());
         holder.country = country;
         Picasso.get()
                 .load(country.getCountryInfo().getFlag())
                 .into(holder.countryFlagImageView);
 
-        holder.caseValue.setText(country.getCases());
-        holder.todayCaseValue.setText(country.getTodayCases());
-        holder.deathValue.setText(country.getDeaths());
-        holder.todayDeathValue.setText(country.getTodayDeaths());
-        holder.recoveredValue.setText(country.getRecovered());
-        holder.todayRecoveredValue.setText(country.getTodayRecovered());
-        holder.activeValue.setText(country.getActive());
-        holder.criticalValue.setText(country.getCritical());
-        holder.testValue.setText(country.getTests());
+        holder.caseValue.setText(country.getCases().toString());
+        holder.todayCaseValue.setText(country.getTodayCases().toString());
+        holder.deathValue.setText(country.getDeaths().toString());
+        holder.todayDeathValue.setText(country.getTodayDeaths().toString());
+        holder.recoveredValue.setText(country.getRecovered().toString());
+        holder.todayRecoveredValue.setText(country.getTodayRecovered().toString());
+        holder.activeValue.setText(country.getActive().toString());
+        holder.criticalValue.setText(country.getCritical().toString());
+        holder.testValue.setText(country.getTests().toString());
     }
 
     @Override
