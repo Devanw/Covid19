@@ -30,43 +30,13 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splashscreen);
-
-        RetroServerCorona.getInstance().getAll().enqueue(new Callback<AllCovidInfo>() {
+        new Timer().schedule(new TimerTask() {
             @Override
-            public void onResponse(Call<AllCovidInfo> call, Response<AllCovidInfo> response) {
-                try {
-                    Log.d("getAll response : ", ""+ response.code() + "\n" + new Gson().toJson(response.body()));
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    intent.putExtra(HomeActivity.EXTRA_ALL_COVID_INFO, new Gson().toJson(response.body()));
-                    startActivity(intent);
-                } catch (Exception e) {
-                    showMessage(e.getMessage(), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            recreate();
-                        }
-                    });
-                }
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
-
-            @Override
-            public void onFailure(Call<AllCovidInfo> call, Throwable t) {
-                Log.e("getAll onFailure : ", t.getMessage());
-                showMessage(t.getMessage(), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        recreate();
-                    }
-                });
-            }
-        });
-
-
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-//            }
-//        }, 1000);
+        }, 1000);
     }
 }
