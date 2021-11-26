@@ -1,5 +1,6 @@
 package com.example.covid19.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -209,4 +210,13 @@ public class AuthActivity extends AppCompatActivity {
             }
         });
     }
+
+    protected void showMessage (String msg, DialogInterface.OnClickListener onClick) {
+        new AlertDialog.Builder(this)
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", onClick)
+                .show();
+    }
+
 }
