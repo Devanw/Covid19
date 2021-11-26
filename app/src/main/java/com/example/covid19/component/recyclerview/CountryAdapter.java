@@ -112,6 +112,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                             Log.e(TAG, "ViewHolder: add");
                             obj2.add(country);
                             holder.iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                            break;
                         }
                     }
                     //write to sharedpref
