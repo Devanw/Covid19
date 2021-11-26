@@ -70,6 +70,66 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         holder.activeValue.setText(country.getActive().toString());
         holder.criticalValue.setText(country.getCritical().toString());
         holder.testValue.setText(country.getTests().toString());
+        holder.detailCardView.setVisibility(View.GONE);
+
+        //read file
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("BookmarkList", null);
+        Type type = new TypeToken<ArrayList<Country>>() {}.getType();
+        ArrayList<Country> obj = gson.fromJson(json, type);
+        if (obj != null && countries != null) { //replace ke check countryname ada di sharedpref bookmark / ga
+            for (int i=0; i < obj.size(); i++) {
+                //filter according to owner of clicked card
+                if (obj.get(i).getCountry().equals(country.getCountry())) {
+                    holder.iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                } else {
+                    holder.iconBookmark.setImageResource(android.R.drawable.star_big_off);
+                }
+            }
+        } else {
+            obj = new ArrayList<>();
+            holder.iconBookmark.setImageResource(android.R.drawable.star_big_off);
+        }
+
+        ArrayList<Country> finalObj = obj;
+        holder.iconBookmark.setOnClickListener(v -> {
+            //read file
+            try {
+                Gson gson2 = new Gson();
+                String json2 = sharedPreferences.getString("BookmarkList", null);
+                Type type2 = new TypeToken<ArrayList<Country>>() {
+                }.getType();
+                ArrayList<Country> obj2 = gson2.fromJson(json2, type2);
+                if (obj2!=null && obj2.size() >0) { //replace ke check countryname ada di sharedpref bookmark / ga
+                    Log.e(TAG, "ViewHolder: abov0");
+                    for (int i=0; i < obj2.size(); i++) {
+                        //filter according to owner of clicked card
+                        if (obj2.get(i).getCountry().equals(country.getCountry())) {
+                            Log.e(TAG, "ViewHolder: rmv");
+                            obj2.remove(i);
+                            holder.iconBookmark.setImageResource(android.R.drawable.star_big_off);
+                        } else {
+                            Log.e(TAG, "ViewHolder: add");
+                            obj2.add(country);
+                            holder.iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                        }
+                    }
+                    //write to sharedpref
+                } else {
+                    obj2 = finalObj;
+                    Log.e(TAG, "ViewHolder: add");
+                    obj2.add(country);
+                    holder.iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                }
+                SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                String writeData = gson2.toJson(obj2);
+                prefsEditor.putString("BookmarkList", writeData);
+                prefsEditor.commit();
+                Log.e(TAG, "ViewHolder: after act" + obj2.size());
+            } catch (Exception e) {
+                Log.e(TAG, "ViewHolder: " +e.getMessage());
+            }
+        });
     }
 
     @Override
@@ -123,65 +183,6 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
             activeValue = itemView.findViewById(R.id.activeValue);
             criticalValue = itemView.findViewById(R.id.criticalValue);
             testValue = itemView.findViewById(R.id.testValue);
-
-            //read file
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString("BookmarkList", null);
-            Type type = new TypeToken<ArrayList<Country>>() {}.getType();
-            ArrayList<Country> obj = gson.fromJson(json, type);
-            if (obj != null && country != null) { //replace ke check countryname ada di sharedpref bookmark / ga
-                for (int i = obj.size() - 1; i >= 0; i--) {
-                    //filter according to owner of clicked card
-                    if (obj.get(i).getCountry().equals(country.getCountry())) {
-                        iconBookmark.setImageResource(android.R.drawable.star_big_on);
-                    } else {
-                        iconBookmark.setImageResource(android.R.drawable.star_big_off);
-                    }
-                }
-            } else {
-                obj = new ArrayList<>();
-                iconBookmark.setImageResource(android.R.drawable.star_big_off);
-            }
-
-            ArrayList<Country> finalObj = obj;
-            iconBookmark.setOnClickListener(v -> {
-                //read file
-                try {
-                    Gson gson2 = new Gson();
-                    String json2 = sharedPreferences.getString("BookmarkList", null);
-                    Type type2 = new TypeToken<ArrayList<Country>>() {
-                    }.getType();
-                    ArrayList<Country> obj2 = gson2.fromJson(json2, type2);
-                    if (obj2!=null && obj2.size() >0) { //replace ke check countryname ada di sharedpref bookmark / ga
-                        Log.e(TAG, "ViewHolder: abov0");
-                        for (int i = obj2.size() - 1; i >= 0; i--) {
-                            //filter according to owner of clicked card
-                            if (obj2.get(i).getCountry().equals(country.getCountry())) {
-                                Log.e(TAG, "ViewHolder: rmv" );
-                                obj2.remove(i);
-                                iconBookmark.setImageResource(android.R.drawable.star_big_off);
-                            } else {
-                                Log.e(TAG, "ViewHolder: add" );
-                                obj2.add(country);
-                                iconBookmark.setImageResource(android.R.drawable.star_big_on);
-                            }
-                        }
-                        //write to sharedpref
-                    } else {
-                        obj2 = finalObj;
-                        Log.e(TAG, "ViewHolder: add");
-                        obj2.add(country);
-                        iconBookmark.setImageResource(android.R.drawable.star_big_on);
-                    }
-                    SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-                    String writeData = gson2.toJson(obj2);
-                    prefsEditor.putString("BookmarkList", writeData);
-                    prefsEditor.commit();
-                    Log.e(TAG, "ViewHolder: after act" + obj2.size());
-                } catch (Exception e) {
-                    Log.e(TAG, "ViewHolder: " +e.getMessage());
-                }
-            });
         }
 
         @Override

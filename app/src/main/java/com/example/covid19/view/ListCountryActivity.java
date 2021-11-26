@@ -151,7 +151,10 @@ public class ListCountryActivity extends BaseActivity {
         flagBookmark = !flagBookmark;
         if (flagBookmark) {
             bm.setImageDrawable(getDrawable(R.drawable.heart_alt));
-            countryAdapter.setCountries(obj);
+            if (obj != null)
+                countryAdapter.setCountries(obj);
+            else
+                countryAdapter.setCountries(new ArrayList<>());
         } else {
             bm.setImageDrawable(getDrawable(R.drawable.heart));
             countryAdapter.setCountries(countries);
