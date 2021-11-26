@@ -3,6 +3,9 @@ package com.example.covid19.plugin.sessionmanager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.covid19.component.recyclerview.CountryAdapter;
+import com.example.covid19.view.AuthActivity;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -60,20 +63,20 @@ public class SessionManagerUtil {
     }
 
     private void clearStoredData(Context context){
-        SharedPreferences.Editor editor =
-                context.getSharedPreferences(SESSION_PREFERENCE, Context.MODE_PRIVATE).edit();
-        editor.clear();
-        editor.apply();
-
         SharedPreferences.Editor bookmark =
-                context.getSharedPreferences("BookmarkList", Context.MODE_PRIVATE).edit();
+                context.getSharedPreferences(CountryAdapter.SAVE, Context.MODE_PRIVATE).edit();
         bookmark.clear();
         bookmark.apply();
 
         SharedPreferences.Editor userinfo =
-                context.getSharedPreferences("Userinfo", Context.MODE_PRIVATE).edit();
+                context.getSharedPreferences(AuthActivity.USERINFO, Context.MODE_PRIVATE).edit();
         userinfo.clear();
         userinfo.apply();
+
+        SharedPreferences.Editor editor =
+                context.getSharedPreferences(SESSION_PREFERENCE, Context.MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
     }
 
 }
