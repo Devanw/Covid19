@@ -150,7 +150,7 @@ public class ListCountryActivity extends BaseActivity {
     private void doSearchItems(String query){
         int foundItem = 0;
         ArrayList<Country> bufferArray = new ArrayList<Country>();
-        ArrayList<Country> sourceArray = new ArrayList<Country>();
+        ArrayList<Country> sourceArray;
         Gson gson = new Gson();
         String json = sharedPreferences.getString("BookmarkList", null);
         Type type = new TypeToken<ArrayList<Country>>() {}.getType();
