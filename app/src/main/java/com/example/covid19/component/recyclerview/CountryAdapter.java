@@ -28,18 +28,21 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
+    private Context context;
     private ArrayList<Country> countries;
 
     public static final String SAVE = "com.example.covid19.listCountry";
     private SharedPreferences sharedPreferences;
 
-    public CountryAdapter(){
+    public CountryAdapter(Context context, ArrayList<Country> countries) {
+        this.context = context;
+        this.countries = countries;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+//        Context context = parent.getContext();
         sharedPreferences = context.getSharedPreferences(SAVE, Context.MODE_PRIVATE);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.rv_item, parent, false);

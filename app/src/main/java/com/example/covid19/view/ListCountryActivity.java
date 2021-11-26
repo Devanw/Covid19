@@ -16,18 +16,24 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
 import com.example.covid19.component.recyclerview.CountryAdapter;
 import com.example.covid19.model.covid.Country;
+import com.example.covid19.model.covid.CountryInfo;
 import com.example.covid19.model.user.User;
 import com.example.covid19.plugin.retrofit.AuthRetrofit;
 import com.example.covid19.plugin.retrofit.CovidRetrofit;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -48,6 +54,8 @@ public class ListCountryActivity extends BaseActivity {
     private CountryAdapter countryAdapter;
     private ArrayList<Country> countries = new ArrayList<>();;
 
+    private JSONArray countryArray = null;
+
     public static final String EXTRA_COUNTRIES = "extraCountries";
 
     @Override
@@ -55,6 +63,8 @@ public class ListCountryActivity extends BaseActivity {
         Log.e("TAG", "onCreate: Listcountry");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_view);
+
+        initExtra();
         // insert shared preference. get user's name
         String user = "User";
         getSupportActionBar().setTitle("Cases by Country ");
@@ -62,61 +72,123 @@ public class ListCountryActivity extends BaseActivity {
 
 
         recyclerView = findViewById(R.id.recyclerview);
-        CovidRetrofit covidRetrofit = new CovidRetrofit();
-        covidRetrofit.getAPI().getCountries().enqueue(new Callback<List<Country>>() {
-            @Override
-            public void onResponse(Call<List<Country>> call, Response<List<Country>> response) {
-                //set value to array
-            }
-
-            @Override
-            public void onFailure(Call<List<Country>> call, Throwable t) {
-                Snackbar.make(findViewById(R.id.loginConstraintLayout), "Error: " + t.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
-            }
-
-        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        countryAdapter = new CountryAdapter(this,countries);
+        recyclerView.setAdapter(countryAdapter);
+//        CovidRetrofit covidRetrofit = new CovidRetrofit();
+//        covidRetrofit.getAPI().getCountries().enqueue(new Callback<List<Country>>() {
+//            @Override
+//            public void onResponse(Call<List<Country>> call, Response<List<Country>> response) {
+//                //set value to array
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Country>> call, Throwable t) {
+//                Snackbar.make(findViewById(R.id.loginConstraintLayout), "Error: " + t.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
+//            }
+//
+//        });
 
         sharedPreferences = getSharedPreferences(SAVE, Context.MODE_PRIVATE);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_menu, menu);
-
-        SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView sv = (SearchView) menu.findItem(R.id.search).getActionView();
-        sv.setSearchableInfo(sm.getSearchableInfo(getComponentName()));
-        sv.setIconifiedByDefault(true);
-        sv.setMaxWidth(Integer.MAX_VALUE);
-        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Log.e("TAG", "onQueryTextSubmit: " + s);
-                doSearchItems(s);
-                return true;
+    private void initExtra() {
+        try {
+            if (getIntent().hasExtra(EXTRA_COUNTRIES)) {
+                countryArray = new JSONArray(getIntent().getStringExtra(EXTRA_COUNTRIES));
+                populateCountryData(countryArray);
+                Log.d("countryArray", countryArray.toString());
             }
-            @Override
-            public boolean onQueryTextChange(String s) {
-                Log.e("TAG", "onQueryTextSubmit: "+ s);
-                if (TextUtils.isEmpty(s)){
-                    resetData();
-                    return true;
-                } else {
-                    doSearchItems(s);
-                }
-                return false;
-            }
-        });
-
-        ImageView bm = (ImageView) menu.findItem(R.id.bookmark).getActionView();
-
-        bm.setOnClickListener(v -> {
-            switchAdapterData(bm);
-        });
-
-        return true;
+        } catch (Exception e) {
+            Log.e("countryArray", e.getMessage());
+        }
     }
+
+    private void populateCountryData(JSONArray arr) {
+        try {
+            for (int i=0; i<arr.length(); i++) {
+                Country country = new Country();
+                JSONObject countryObj = arr.getJSONObject(i);
+                country.setUpdated(countryObj.getLong("updated"));
+                country.setCountry(countryObj.getString("country"));
+
+                CountryInfo countryInfo = new CountryInfo();
+                JSONObject countryInfoObj = countryObj.getJSONObject("countryInfo");
+                countryInfo.setId(countryInfoObj.getInt("_id"));
+                countryInfo.setIso2(countryInfoObj.getString("iso2"));
+                countryInfo.setIso3(countryInfoObj.getString("iso3"));
+                countryInfo.setLat(countryInfoObj.getDouble("lat"));
+                countryInfo.setLong(countryInfoObj.getDouble("long"));
+                countryInfo.setFlag(countryInfoObj.getString("flag"));
+
+                country.setCountryInfo(countryInfo);
+                country.setCases(countryObj.getInt("cases"));
+                country.setTodayCases(countryObj.getInt("todayCases"));
+                country.setDeaths(countryObj.getInt("deaths"));
+                country.setTodayDeaths(countryObj.getInt("todayDeaths"));
+                country.setRecovered(countryObj.getInt("recovered"));
+                country.setTodayRecovered(countryObj.getInt("todayRecovered"));
+                country.setActive(countryObj.getInt("active"));
+                country.setCritical(countryObj.getInt("critical"));
+                country.setCasesPerOneMillion(countryObj.getInt("casesPerOneMillion"));
+                country.setDeathsPerOneMillion(countryObj.getInt("deathsPerOneMillion"));
+                country.setTests(countryObj.getInt("tests"));
+                country.setTestsPerOneMillion(countryObj.getInt("testsPerOneMillion"));
+                country.setPopulation(countryObj.getInt("population"));
+                country.setContinent(countryObj.getString("continent"));
+                country.setOneCasePerPeople(countryObj.getInt("oneCasePerPeople"));
+                country.setOneDeathPerPeople(countryObj.getInt("oneDeathPerPeople"));
+                country.setOneTestPerPeople(countryObj.getInt("oneTestPerPeople"));
+                country.setActivePerOneMillion(countryObj.getDouble("activePerOneMillion"));
+                country.setRecoveredPerOneMillion(countryObj.getDouble("recoveredPerOneMillion"));
+                country.setCriticalPerOneMillion(countryObj.getDouble("criticalPerOneMillion"));
+
+                countries.add(country);
+            }
+        } catch (JSONException e) {
+            Log.e("countryArray", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    //    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.toolbar_menu, menu);
+//
+//        SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView sv = (SearchView) menu.findItem(R.id.search).getActionView();
+//        sv.setSearchableInfo(sm.getSearchableInfo(getComponentName()));
+//        sv.setIconifiedByDefault(true);
+//        sv.setMaxWidth(Integer.MAX_VALUE);
+//        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                Log.e("TAG", "onQueryTextSubmit: " + s);
+//                doSearchItems(s);
+//                return true;
+//            }
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                Log.e("TAG", "onQueryTextSubmit: "+ s);
+//                if (TextUtils.isEmpty(s)){
+//                    resetData();
+//                    return true;
+//                } else {
+//                    doSearchItems(s);
+//                }
+//                return false;
+//            }
+//        });
+//
+//        ImageView bm = (ImageView) menu.findItem(R.id.bookmark).getActionView();
+//
+//        bm.setOnClickListener(v -> {
+//            switchAdapterData(bm);
+//        });
+//
+//        return true;
+//    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
