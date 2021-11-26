@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewDetail"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="-30dp"
@@ -18,8 +18,9 @@
         app:cardElevation="8dp"
         app:cardMaxElevation="16dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toBottomOf="@id/cardView"
-        tools:layout_editor_absoluteX="8dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,7 +29,7 @@
             android:background="#F1F1F1"
             android:paddingBottom="8dp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/bookmarkIconCard"
                 android:layout_width="34sp"
                 android:layout_height="34sp"
@@ -200,11 +201,11 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
         app:cardMaxElevation="16dp"
         app:cardPreventCornerOverlap="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
