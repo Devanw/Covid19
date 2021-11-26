@@ -11,7 +11,7 @@ public class User {
     private Object oauthUid;
     private Object oauthProvider;
     private String username;
-    private String fullName;
+    private String full_name;
     private String avatar;
     private String banned;
     private String lastLogin;
@@ -66,11 +66,11 @@ public class User {
     }
 
     public String getFullName() {
-        return fullName;
+        return full_name;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        this.full_name = fullName;
     }
 
     public String getAvatar() {
