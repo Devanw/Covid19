@@ -2,6 +2,8 @@ package com.example.covid19.view;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +26,10 @@ import com.example.covid19.model.user.User;
 import com.example.covid19.plugin.retrofit.AuthRetrofit;
 import com.example.covid19.plugin.retrofit.CovidRetrofit;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +40,8 @@ import retrofit2.Response;
 
 public class ListCountryActivity extends BaseActivity {
 
+    public static final String SAVE = "com.example.covid19.listCountry";
+    private SharedPreferences sharedPreferences;
     private Boolean flagBookmark = false;
 
     private RecyclerView recyclerView;
@@ -67,8 +74,7 @@ public class ListCountryActivity extends BaseActivity {
 
         });
 
-
-
+        sharedPreferences = getSharedPreferences(SAVE, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -104,14 +110,13 @@ public class ListCountryActivity extends BaseActivity {
         ImageView bm = (ImageView) menu.findItem(R.id.bookmark).getActionView();
 
         bm.setOnClickListener(v -> {
-            flagBookmark = !flagBookmark;
+            switchAdapterData(bm);
         });
 
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        System.out.println(item);
         switch (item.getItemId()){
             case R.id.search:
                 System.out.println(item);
@@ -123,6 +128,22 @@ public class ListCountryActivity extends BaseActivity {
 
     private void resetData(){
         countryAdapter.setCountries(countries);
+        countryAdapter.notifyDataSetChanged();
+    }
+
+    private void switchAdapterData(ImageView bm) {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("BookmarkList", null);
+        Type type = new TypeToken<ArrayList<Country>>() {}.getType();
+        ArrayList<Country> obj = gson.fromJson(json, type);
+        flagBookmark = !flagBookmark;
+        if (flagBookmark) {
+            bm.setImageDrawable(getDrawable(R.drawable.heart_alt));
+            countryAdapter.setCountries(obj);
+        } else {
+            bm.setImageDrawable(getDrawable(R.drawable.heart));
+            countryAdapter.setCountries(countries);
+        }
         countryAdapter.notifyDataSetChanged();
     }
 

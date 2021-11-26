@@ -3,6 +3,7 @@ package com.example.covid19.component.recyclerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +16,22 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.covid19.model.covid.Country;
+
+import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import com.example.covid19.R;
 import com.example.covid19.view.HomeActivity;
 import com.example.covid19.view.ListCountryActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
     private ArrayList<Country> countries;
+
+    public static final String SAVE = "com.example.covid19.listCountry";
+    private SharedPreferences sharedPreferences;
 
     public CountryAdapter(){
     }
@@ -31,6 +40,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        sharedPreferences = context.getSharedPreferences(SAVE, Context.MODE_PRIVATE);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.rv_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
@@ -43,6 +53,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         holder.countryName.setText(country.getCountry());
         holder.continentName.setText(country.getContinent());
         holder.activeCaseTextView.setText(country.getActive());
+        holder.country = country;
         Picasso.get()
                 .load(country.getCountryInfo().getFlag())
                 .into(holder.countryFlagImageView);
@@ -61,6 +72,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         ImageView countryFlagImageView;
         CardView detailCardView;
         ImageView iconBookmark;
+        Country country;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,11 +89,40 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                     detailCardView.setVisibility(View.GONE);
                 }
             });
+
+            //read file
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("BookmarkList", null);
+            Type type = new TypeToken<ArrayList<Country>>() {}.getType();
+            ArrayList<Country> obj = gson.fromJson(json, type);
+            if (!obj.isEmpty()) { //replace ke check countryname ada di sharedpref bookmark / ga
+                for (int i = obj.size() - 1; i >= 0; i--) {
+                    //filter according to owner of clicked card
+                    if (obj.get(i).getCountry().equals(country.getCountry())) {
+                        iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                    } else {
+                        iconBookmark.setImageResource(android.R.drawable.star_big_off);
+                    }
+                }
+            }
+
             iconBookmark.setOnClickListener(v -> {
-                if (true) { //replace ke check countryname ada di sharedpref bookmark / ga
-                    iconBookmark.setImageResource(android.R.drawable.star_big_off);
-                } else {
-                    iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                if (!obj.isEmpty()) { //replace ke check countryname ada di sharedpref bookmark / ga
+                    for (int i = obj.size()-1; i >= 0; i--) {
+                        //filter according to owner of clicked card
+                        if(obj.get(i).getCountry().equals(country.getCountry())){
+                            obj.remove(i);
+                            iconBookmark.setImageResource(android.R.drawable.star_big_off);
+                        } else {
+                            obj.add(country);
+                            iconBookmark.setImageResource(android.R.drawable.star_big_on);
+                        }
+                    }
+                    //write to sharedpref
+                    SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                    String writeData = gson.toJson(obj);
+                    prefsEditor.putString("BookmarkList", writeData);
+                    prefsEditor.commit();
                 }
             });
         }
