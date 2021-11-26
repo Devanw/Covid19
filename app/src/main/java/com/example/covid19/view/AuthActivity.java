@@ -105,8 +105,8 @@ public class AuthActivity extends BaseActivity {
 
     private void validate(){
 
-        username = tilUsername.getEditText().getText().toString();
-        password = tilPassword.getEditText().getText().toString();
+        username = "demo@demo.com";
+        password = "demo123";
 
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Username dan password tidak boleh kosong!!", Toast.LENGTH_SHORT).show();
