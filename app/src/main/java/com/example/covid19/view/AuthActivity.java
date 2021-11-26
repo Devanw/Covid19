@@ -1,6 +1,7 @@
 package com.example.covid19.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -23,9 +24,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.covid19.BaseActivity;
+import com.example.covid19.MainActivity;
 import com.example.covid19.R;
 import com.example.covid19.api.endpoint.AuthEndPointInterface;
 import com.example.covid19.api.service.AuthService;
+import com.example.covid19.api.service.RetroServerCorona;
+import com.example.covid19.model.covid.AllCovidInfo;
 import com.example.covid19.model.payload.PayloadLogin;
 import com.example.covid19.model.user.LoginResponse;
 import com.example.covid19.model.user.User;
@@ -45,7 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends BaseActivity {
     public static final String USERINFO = "USERINFO";
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
@@ -174,8 +178,35 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        this.startActivity(intent);
+
+        RetroServerCorona.getInstance().getAll().enqueue(new Callback<AllCovidInfo>() {
+            @Override
+            public void onResponse(Call<AllCovidInfo> call, Response<AllCovidInfo> response) {
+                try {
+                    Log.d("getAll response : ", ""+ response.code() + "\n" + new Gson().toJson(response.body()));
+                    Intent intent = new Intent(AuthActivity.this, HomeActivity.class);
+                    intent.putExtra(HomeActivity.EXTRA_ALL_COVID_INFO, new Gson().toJson(response.body()));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    showMessage(e.getMessage(), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            recreate();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AllCovidInfo> call, Throwable t) {
+                Log.e("getAll onFailure : ", t.getMessage());
+                showMessage(t.getMessage(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        recreate();
+                    }
+                });
+            }
+        });
     }
 }

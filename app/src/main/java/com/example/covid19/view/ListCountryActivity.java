@@ -24,12 +24,17 @@ import com.example.covid19.BaseActivity;
 import com.example.covid19.R;
 import com.example.covid19.component.recyclerview.CountryAdapter;
 import com.example.covid19.model.covid.Country;
+import com.example.covid19.model.covid.CountryInfo;
 import com.example.covid19.model.user.User;
 import com.example.covid19.plugin.retrofit.AuthRetrofit;
 import com.example.covid19.plugin.retrofit.CovidRetrofit;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -49,6 +54,8 @@ public class ListCountryActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private CountryAdapter countryAdapter;
     private ArrayList<Country> countries = new ArrayList<>();;
+
+    private JSONArray countryArray = null;
 
     public static final String EXTRA_COUNTRIES = "extraCountries";
 
@@ -144,7 +151,10 @@ public class ListCountryActivity extends BaseActivity {
         flagBookmark = !flagBookmark;
         if (flagBookmark) {
             bm.setImageDrawable(getDrawable(R.drawable.heart_alt));
-            countryAdapter.setCountries(obj);
+            if (obj != null)
+                countryAdapter.setCountries(obj);
+            else
+                countryAdapter.setCountries(new ArrayList<>());
         } else {
             bm.setImageDrawable(getDrawable(R.drawable.heart));
             countryAdapter.setCountries(countries);
