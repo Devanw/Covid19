@@ -1,6 +1,10 @@
 package com.example.covid19;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,4 +25,25 @@ public class BaseActivity extends AppCompatActivity {
 //        }
 //        super.onResume();
 //    }
+
+    protected void showMessage (String msg, DialogInterface.OnClickListener onClick) {
+        new AlertDialog.Builder(this)
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", onClick)
+                .show();
+    }
+
+    protected void showMessage (String msg) {
+        new AlertDialog.Builder(this)
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
 }
