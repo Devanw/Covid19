@@ -126,7 +126,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
             String json = sharedPreferences.getString("BookmarkList", null);
             Type type = new TypeToken<ArrayList<Country>>() {}.getType();
             ArrayList<Country> obj = gson.fromJson(json, type);
-            if (!obj.isEmpty()) { //replace ke check countryname ada di sharedpref bookmark / ga
+            if (obj != null) { //replace ke check countryname ada di sharedpref bookmark / ga
                 for (int i = obj.size() - 1; i >= 0; i--) {
                     //filter according to owner of clicked card
                     if (obj.get(i).getCountry().equals(country.getCountry())) {
@@ -138,7 +138,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
             }
 
             iconBookmark.setOnClickListener(v -> {
-                if (!obj.isEmpty()) { //replace ke check countryname ada di sharedpref bookmark / ga
+                if (obj != null) { //replace ke check countryname ada di sharedpref bookmark / ga
                     for (int i = obj.size()-1; i >= 0; i--) {
                         //filter according to owner of clicked card
                         if(obj.get(i).getCountry().equals(country.getCountry())){
