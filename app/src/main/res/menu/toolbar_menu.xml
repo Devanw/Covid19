@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/bookmark"
-        android:icon="@drawable/heart"
         android:title="SnackBar"
+        app:actionViewClass="androidx.appcompat.widget.AppCompatImageButton"
         app:showAsAction="ifRoom" />
 
     <item
@@ -13,5 +13,5 @@
         android:icon="@android:drawable/ic_menu_search"
         android:title="Search"
         app:showAsAction="ifRoom"
-        app:actionViewClass="android.widget.SearchView"/>
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 </menu>
