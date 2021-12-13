@@ -25,6 +25,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    //Android Studio Version Until 4
+    viewBinding {
+        enabled = true
+    }
+
+    //Android Studio Version 4 -> gradle version 6.1.1 -> android gradle plugin version 4.0.0
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -35,4 +45,11 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'org.glassfish:javax.annotation:10.0-b28'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
